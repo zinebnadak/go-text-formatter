@@ -1,20 +1,19 @@
-# Project Name
+# Go Text Formatter
  
-<One sentence: what it does and who it's for.>
- 
+> A command-line text auto-corrector in Go that reads a text file, applies formatting rules (hex/bin to decimal, case changes, punctuation spacing, quotes, a→an), and writes the result to a new file.
+
 ## Example
- 
+
 ```
-Input:  <short input>
-Output: <short output>
+Input:  
+Output: 
 ```
  
 ## Usage
  
 ```bash
-git clone https://github.com/<you>/<repo>.git
-cd <repo>
-<run command>
+git clone https://github.com/zinebnadak/go-text-formatter.git
+cd go-text-formatter
 ```
  
 ## Tests
@@ -25,13 +24,15 @@ cd <repo>
  
 ## Tech
  
-- Language: <Go / JavaScript / Rust / Java>
-- Standard library only / <main packages>
+- Language: <Go>
+- Dependencies: This project depends on [Go´s standard libraries](https://pkg.go.dev/std) only
+
 ## What I learned
  
-- <one concrete skill>
-- <one concrete skill>
----
+- Go file system(fs) API
+- String and numbers manipulation
+
+--- 
  
-Built at [grit:lab](https://gritlab.ax), Åland (01-edu peer-learning program).
+Built at [grit:lab](https://gritlab.ax), Åland (01-edu peer-learning program)
  
