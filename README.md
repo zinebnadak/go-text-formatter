@@ -31,6 +31,7 @@ cd go-text-formatter
  
 - Go file system(fs) API
 - String and numbers manipulation
+- [unit testing](https://go.dev/doc/tutorial/add-a-test)
 
 --- 
  
