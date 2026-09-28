@@ -14,6 +14,13 @@ func main() { // main.go funktion never takes parameters
 		return
 	}
 
+	// reading a file
+	fileContents, err := os.ReadFile(os.Args[1])
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
 	
 
 }
