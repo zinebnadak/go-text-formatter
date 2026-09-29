@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"strings"
 )
 
 
@@ -21,11 +22,16 @@ func main() { // main.go funktion never takes parameters
 		return
 	}
 
+	// Split the text into tokens (words) so each rule can edit them one by one,
+	// then join them back with single spaces. strings.Fields also removes extra whitespace.
+	text := string(fileContents)
+	tokens := strings.Fields(text)
+	result := strings.Join(tokens, " ")
+
 	// writing the output file
-	err = os.WriteFile(os.Args[2], fileContents, 0644)
+	err = os.WriteFile(os.Args[2], []byte(result), 0644)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-
 }
