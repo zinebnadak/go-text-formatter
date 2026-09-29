@@ -21,6 +21,11 @@ func main() { // main.go funktion never takes parameters
 		return
 	}
 
-	
+	// writing the output file
+	err = os.WriteFile(os.Args[2], fileContents, 0644)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 
 }
