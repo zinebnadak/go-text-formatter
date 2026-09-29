@@ -27,7 +27,8 @@ func main() { // main.go funktion never takes parameters
 	// then join them back with single spaces. strings.Fields also removes extra whitespace.
 	text := string(fileContents)
 	tokens := strings.Fields(text)
-	tokens = convertBases(tokens) // our function
+	tokens = convertBases(tokens) // hex & bin
+	tokens = removeTags(tokens) // remove tags
 	result := strings.Join(tokens, " ")
 
 	// writing the output file
@@ -63,4 +64,16 @@ func convertBases(tokens []string) []string {
 
 	}
 	return tokens
+}
+
+
+func removeTags(tokens []string) []string {
+	var keep []string 	// empty slice to fill 
+	for _,  word := range tokens {
+		if word == "(hex)" || word == "(bin)" { // is it a tag???
+			continue // skip if yes
+		}
+		keep = append(keep, word) // keep if no
+	}
+	return keep // the list "tokens" but without tags
 }
