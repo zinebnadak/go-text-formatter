@@ -26,6 +26,11 @@ func main() { // main.go funktion never takes parameters
 	// Split the text into tokens (words) so each rule can edit them one by one,
 	// then join them back with single spaces. strings.Fields also removes extra whitespace.
 	text := string(fileContents)
+
+	text = strings.ReplaceAll(text, "(up, ", "(up,")   // for numbered tags. "(up, 2)" -> "(up,2)"
+	text = strings.ReplaceAll(text, "(low, ", "(low,")
+	text = strings.ReplaceAll(text, "(cap, ", "(cap,")
+
 	tokens := strings.Fields(text)
 	tokens = convertBases(tokens) // hex & bin
 	tokens = changeCase(tokens) // up, low, cap
@@ -71,7 +76,7 @@ func convertBases(tokens []string) []string {
 func removeTags(tokens []string) []string {
 	var keep []string 	// empty slice to fill 
 	for _,  word := range tokens {
-			if word == "(hex)" || word == "(bin)" || word == "(up)" || word == "(low)" || word == "(cap)" {  // is it a tag???
+			if word == "(hex)" || word == "(bin)" || word == "(up)" || word == "(low)" || word == "(cap)" || strings.HasPrefix(word, "(up,") || strings.HasPrefix(word, "(low,") || strings.HasPrefix(word, "(cap,") {  // is it a tag???
 			continue // skip if yes
 		}
 		keep = append(keep, word) // keep if no
@@ -79,8 +84,8 @@ func removeTags(tokens []string) []string {
 	return keep // the list "tokens" but without tags
 }
 
+// changeCase applies (up), (low), (cap) to the word before the tag, and numbered tags like (up,2) to the n words before it.
 
-// Apply (up), (low), (cap) to the word before the tag.
 func changeCase(tokens []string) []string {
 	for index, word := range tokens { // go through every token
 
@@ -99,6 +104,31 @@ func changeCase(tokens []string) []string {
 			previous_word := tokens[index-1]
 			tokens[index-1] = strings.ToUpper(previous_word[:1]) + strings.ToLower(previous_word[1:]) // bRIDGE -> Bridge
 		}
+
+		// numbered tags like "(up,2)"
+		if strings.HasPrefix(word, "(up,") || strings.HasPrefix(word, "(low,") || strings.HasPrefix(word, "(cap,") {
+			comma := strings.Index(word, ",") // position of the comma
+			mode := word[1:comma] // "(up,2)" to "up"
+			n, err := strconv.Atoi(word[comma+1 : len(word)-1]) // "(up,2)" to 2
+			if err == nil {
+				for j := 1; j <= n && index-j >= 0; j++ { // the n words before; stop at the start
+					tokens[index-j] = applyCase(tokens[index-j], mode)
+				}
+			}
+		}
 	}
 	return tokens
+}
+
+
+func applyCase(word string, mode string) string {
+	switch mode {
+	case "up":
+		return strings.ToUpper(word)
+	case "low":
+		return strings.ToLower(word)
+	case "cap":
+		return strings.ToUpper(word[:1]) + strings.ToLower(word[1:])
+	}
+	return word // unknown mode: leave it unchanged
 }
