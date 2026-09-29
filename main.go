@@ -37,6 +37,7 @@ func main() { // main.go funktion never takes parameters
 	tokens = removeTags(tokens) // remove tags ALWAYS RUNS AFTER
 	tokens = fixPunctuation(tokens) // .,!?:; spacing
 	tokens = fixQuotes(tokens) // ' ' quotes
+	tokens = fixAns(tokens) // a -> an
 	result := strings.Join(tokens, " ")
 
 	// writing the output file
@@ -181,4 +182,21 @@ func fixQuotes(tokens []string) []string {
 		newTokens = append(newTokens, word)
 	}
 	return newTokens
+}
+
+
+// function turns "a" into "an" when the next word starts with a vowel or h
+func fixAns(tokens []string) []string {
+	for i := 0; i < len(tokens)-1; i++ { // stop one step early, becaus the last word has no next word
+		next := strings.ToLower(tokens[i+1])  // lowercase
+		if strings.ContainsAny(next[:1], "aeiouh") { // first letter is a vowel or h????
+			if tokens[i] == "a" {
+				tokens[i] = "an"
+			}
+			if tokens[i] == "A" {
+				tokens[i] = "An" 
+			}
+		}
+	}
+	return tokens
 }
