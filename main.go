@@ -35,6 +35,7 @@ func main() { // main.go funktion never takes parameters
 	tokens = convertBases(tokens) // hex & bin
 	tokens = changeCase(tokens) // up, low, cap
 	tokens = removeTags(tokens) // remove tags ALWAYS RUNS AFTER
+	tokens = fixPunctuation(tokens) // .,!?:; spacing
 	result := strings.Join(tokens, " ")
 
 	// writing the output file
@@ -121,14 +122,37 @@ func changeCase(tokens []string) []string {
 }
 
 
+// to identify which case to apply in numbered tags
 func applyCase(word string, mode string) string {
 	switch mode {
-	case "up":
+	case "up": // if mode == "up"
 		return strings.ToUpper(word)
-	case "low":
+	case "low": // else if mode == "low"
 		return strings.ToLower(word)
-	case "cap":
+	case "cap": // else if mode == "cap"
 		return strings.ToUpper(word[:1]) + strings.ToLower(word[1:])
 	}
 	return word // unknown mode: leave it unchanged
+}
+
+
+
+// function attaches .,!?:; to the previous word.
+func fixPunctuation(tokens []string) []string {
+	var out []string // result list
+
+	for _, word := range tokens {
+		rest := strings.TrimLeft(word, ".,!?:;")   // word without punctuation
+		punctuation := word[:len(word)-len(rest)]   // the punctuation rmeoved
+
+		if punctuation != "" && len(out) > 0 { // there is punctuation AND a previous word
+			out[len(out)-1] += punctuation // attach it to the end of the previous word
+			word = rest              // keep only what is  left
+		}
+
+		if word != "" { // if something left, keep it
+			out = append(out, word)
+		}
+	}
+	return out
 }
