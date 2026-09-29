@@ -28,7 +28,8 @@ func main() { // main.go funktion never takes parameters
 	text := string(fileContents)
 	tokens := strings.Fields(text)
 	tokens = convertBases(tokens) // hex & bin
-	tokens = removeTags(tokens) // remove tags
+	tokens = changeCase(tokens) // up, low, cap
+	tokens = removeTags(tokens) // remove tags ALWAYS RUNS AFTER
 	result := strings.Join(tokens, " ")
 
 	// writing the output file
@@ -70,10 +71,34 @@ func convertBases(tokens []string) []string {
 func removeTags(tokens []string) []string {
 	var keep []string 	// empty slice to fill 
 	for _,  word := range tokens {
-		if word == "(hex)" || word == "(bin)" { // is it a tag???
+			if word == "(hex)" || word == "(bin)" || word == "(up)" || word == "(low)" || word == "(cap)" {  // is it a tag???
 			continue // skip if yes
 		}
 		keep = append(keep, word) // keep if no
 	}
 	return keep // the list "tokens" but without tags
+}
+
+
+// Apply (up), (low), (cap) to the word before the tag.
+func changeCase(tokens []string) []string {
+	for index, word := range tokens { // go through every token
+
+		// up
+		if word == "(up)" && index > 0 { // found (tag), and there IS a word before it
+			tokens[index-1] = strings.ToUpper(tokens[index-1]) // go -> GO
+		}
+
+		// low
+		if word == "(low)" && index > 0 {
+			tokens[index-1] = strings.ToLower(tokens[index-1]) // SHOUT -> shout
+		}
+
+		// cap
+		if word == "(cap)" && index > 0 {
+			previous_word := tokens[index-1]
+			tokens[index-1] = strings.ToUpper(previous_word[:1]) + strings.ToLower(previous_word[1:]) // bRIDGE -> Bridge
+		}
+	}
+	return tokens
 }
