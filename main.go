@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"strconv"
 )
 
 
@@ -61,6 +62,5 @@ func convertBases(tokens []string) []string {
 		}
 
 	}
-
-
+	return tokens
 }
