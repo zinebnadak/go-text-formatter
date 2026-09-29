@@ -36,6 +36,7 @@ func main() { // main.go funktion never takes parameters
 	tokens = changeCase(tokens) // up, low, cap
 	tokens = removeTags(tokens) // remove tags ALWAYS RUNS AFTER
 	tokens = fixPunctuation(tokens) // .,!?:; spacing
+	tokens = fixQuotes(tokens) // ' ' quotes
 	result := strings.Join(tokens, " ")
 
 	// writing the output file
@@ -155,4 +156,29 @@ func fixPunctuation(tokens []string) []string {
 		}
 	}
 	return out
+}
+
+// function attaches ' marks to the words inside them. so for ex "' awesome '" becomes only "'awesome'"
+func fixQuotes(tokens []string) []string {
+	var newTokens []string
+	insideQuote := false        // are we between two ' marks right nowww??
+	addQuoteToNextWord := false // should the next word get a ' in front??
+
+	for _, word := range tokens {
+		if word == "'" {
+			if !insideQuote { // eg false
+				addQuoteToNextWord = true
+			} else if len(newTokens) > 0 { // closing quote: glue to previous word
+				newTokens[len(newTokens)-1] += "'"
+			}
+			insideQuote = !insideQuote // flip: opening <-> closing
+			continue                   // the lone ' is never kept as its own token
+		}
+		if addQuoteToNextWord { // first word after an opening quote
+			word = "'" + word
+			addQuoteToNextWord = false
+		}
+		newTokens = append(newTokens, word)
+	}
+	return newTokens
 }
