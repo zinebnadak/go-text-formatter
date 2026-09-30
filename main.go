@@ -39,7 +39,7 @@ func processText(text string) string {
 	text = strings.ReplaceAll(text, "(cap, ", "(cap,")
 
 	tokens := strings.Fields(text) // split into words, drops extra spaces
-	tokens = convertBases(tokens) // hex & bin
+	tokens = convertBases(tokens)  // hex & bin
 	tokens = changeCase(tokens)    // up, low, cap (+ numbered)
 	tokens = removeTags(tokens)    // tags out, AFTER applying them
 	tokens = fixPunctuation(tokens)
@@ -140,7 +140,7 @@ func fixPunctuation(tokens []string) []string {
 	var out []string
 
 	for _, word := range tokens {
-		rest := strings.TrimLeft(word, ".,!?:;")   // word without leading punctuation
+		rest := strings.TrimLeft(word, ".,!?:;")  // word without leading punctuation
 		punctuation := word[:len(word)-len(rest)] // the punctuation that was removed
 
 		if punctuation != "" && len(out) > 0 { // there is punctuation AND a previous word
